@@ -48,7 +48,7 @@
 
     .buttons {
       position: relative;
-      height: 170px;
+      height: 180px;
     }
 
     button {
@@ -60,15 +60,15 @@
       border-radius: 999px;
       cursor: pointer;
       user-select: none;
+      white-space: nowrap;
     }
 
     #yes {
       background: #ff3b7a;
       color: white;
       left: 50%;
-      top: 60%;
+      top: 65%;
       transform: translate(-50%, -50%);
-      z-index: 2; /* ALWAYS ABOVE */
     }
 
     #no {
@@ -76,7 +76,6 @@
       color: #111;
       left: 10%;
       top: 20%;
-      z-index: 1;
     }
 
     .message {
@@ -138,33 +137,42 @@
     const area = document.getElementById("area");
     const message = document.getElementById("message");
 
-    const safeRadius = 90; // SAFE ZONE around YES
+    const noTexts = [
+      "NO 😅",
+      "Missed 😂",
+      "Try again 😜",
+      "Nope 😈",
+      "Almost 😆"
+    ];
 
     function moveNo() {
       const areaRect = area.getBoundingClientRect();
       const yesRect = yesBtn.getBoundingClientRect();
 
-      let x, y, distance;
+      let x, y, overlap;
 
       do {
-        x = Math.random() * (areaRect.width - 100);
-        y = Math.random() * (areaRect.height - 60);
+        x = Math.random() * (areaRect.width - noBtn.offsetWidth);
+        y = Math.random() * (areaRect.height - noBtn.offsetHeight);
 
-        const noCenterX = areaRect.left + x;
-        const noCenterY = areaRect.top + y;
+        const noLeft = areaRect.left + x;
+        const noTop = areaRect.top + y;
 
-        const yesCenterX = yesRect.left + yesRect.width / 2;
-        const yesCenterY = yesRect.top + yesRect.height / 2;
-
-        distance = Math.hypot(
-          noCenterX - yesCenterX,
-          noCenterY - yesCenterY
+        overlap = !(
+          noLeft + noBtn.offsetWidth < yesRect.left ||
+          noLeft > yesRect.right ||
+          noTop + noBtn.offsetHeight < yesRect.top ||
+          noTop > yesRect.bottom
         );
 
-      } while (distance < safeRadius); // KEEP AWAY FROM YES
+      } while (overlap); // NEVER allow NO over YES
 
       noBtn.style.left = x + "px";
       noBtn.style.top = y + "px";
+
+      // CHANGE TEXT EVERY TIME
+      noBtn.textContent =
+        noTexts[Math.floor(Math.random() * noTexts.length)];
     }
 
     noBtn.addEventListener("mouseenter", moveNo);
@@ -175,7 +183,7 @@
       message.style.display = "block";
 
       confetti({
-        particleCount: 320,
+        particleCount: 300,
         spread: 140,
         origin: { y: 0.6 }
       });
