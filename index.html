@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Important Question 💕</title>
+  <title>Mini Love Game 💕</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
@@ -33,7 +33,7 @@
 
     h1 {
       font-size: 26px;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
 
     .emoji {
@@ -43,12 +43,12 @@
 
     .question {
       font-size: 22px;
-      margin: 18px 0 24px;
+      margin: 16px 0 22px;
     }
 
     .buttons {
       position: relative;
-      height: 160px;
+      height: 170px;
     }
 
     button {
@@ -59,21 +59,24 @@
       border: none;
       border-radius: 999px;
       cursor: pointer;
-      transition: transform 0.15s ease;
+      user-select: none;
     }
 
     #yes {
       background: #ff3b7a;
       color: white;
-      left: 18%;
-      top: 55%;
+      left: 50%;
+      top: 60%;
+      transform: translate(-50%, -50%);
+      z-index: 2; /* ALWAYS ABOVE */
     }
 
     #no {
       background: #e5e7eb;
       color: #111;
-      left: 60%;
-      top: 55%;
+      left: 10%;
+      top: 20%;
+      z-index: 1;
     }
 
     .message {
@@ -110,7 +113,7 @@
 
 <body>
 
-  <div class="game" id="game">
+  <div class="game">
     <div class="emoji">💘</div>
     <h1>Mini Love Game</h1>
 
@@ -126,7 +129,6 @@
     <div class="message" id="message">
       <h2>LEVEL COMPLETE 🎉</h2>
       <p>You unlocked my heart forever ❤️</p>
-      <p>Happy Valentine’s 💘</p>
     </div>
   </div>
 
@@ -136,20 +138,33 @@
     const area = document.getElementById("area");
     const message = document.getElementById("message");
 
-    const noTexts = [
-      "Are you sure? 😏",
-      "Try again 😜",
-      "Nope 😈",
-      "Missed it 😂",
-      "Almost 😆"
-    ];
+    const safeRadius = 90; // SAFE ZONE around YES
 
     function moveNo() {
-      const x = Math.random() * 70;
-      const y = Math.random() * 70;
-      noBtn.style.left = x + "%";
-      noBtn.style.top = y + "%";
-      noBtn.textContent = noTexts[Math.floor(Math.random() * noTexts.length)];
+      const areaRect = area.getBoundingClientRect();
+      const yesRect = yesBtn.getBoundingClientRect();
+
+      let x, y, distance;
+
+      do {
+        x = Math.random() * (areaRect.width - 100);
+        y = Math.random() * (areaRect.height - 60);
+
+        const noCenterX = areaRect.left + x;
+        const noCenterY = areaRect.top + y;
+
+        const yesCenterX = yesRect.left + yesRect.width / 2;
+        const yesCenterY = yesRect.top + yesRect.height / 2;
+
+        distance = Math.hypot(
+          noCenterX - yesCenterX,
+          noCenterY - yesCenterY
+        );
+
+      } while (distance < safeRadius); // KEEP AWAY FROM YES
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
     }
 
     noBtn.addEventListener("mouseenter", moveNo);
@@ -160,8 +175,8 @@
       message.style.display = "block";
 
       confetti({
-        particleCount: 300,
-        spread: 130,
+        particleCount: 320,
+        spread: 140,
         origin: { y: 0.6 }
       });
     });
