@@ -48,7 +48,7 @@
 
     .buttons {
       position: relative;
-      height: 180px;
+      height: 170px;
     }
 
     button {
@@ -63,19 +63,21 @@
       white-space: nowrap;
     }
 
+    /* 🔁 POSITIONS SAME AS FIRST VERSION */
     #yes {
       background: #ff3b7a;
       color: white;
-      left: 50%;
-      top: 65%;
-      transform: translate(-50%, -50%);
+      left: 18%;
+      top: 55%;
+      transform: translateY(-50%);
     }
 
     #no {
       background: #e5e7eb;
       color: #111;
-      left: 10%;
-      top: 20%;
+      left: 60%;
+      top: 55%;
+      transform: translateY(-50%);
     }
 
     .message {
@@ -165,12 +167,12 @@
           noTop > yesRect.bottom
         );
 
-      } while (overlap); // NEVER allow NO over YES
+      } while (overlap); // 🚫 NEVER overlap YES
 
       noBtn.style.left = x + "px";
       noBtn.style.top = y + "px";
 
-      // CHANGE TEXT EVERY TIME
+      // 🔁 CHANGE TEXT EVERY MOVE
       noBtn.textContent =
         noTexts[Math.floor(Math.random() * noTexts.length)];
     }
